@@ -15,8 +15,9 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           leading: IconButton(
               onPressed: () {},
-              icon: Icon(
+              icon: const Icon(
                 Icons.menu,
+                color: Colors.white,
               )),
           title: Container(height: 30, child: Image.asset('assets/logo.png')),
           centerTitle: true,
@@ -34,25 +35,33 @@ class _HomeState extends State<Home> {
                     child: SizedBox(
                       height: 25,
                       child: ElevatedButton(
-                          onPressed: () {}, child: const Text("Relatório")),
+                        child: const Text("Relatório"),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/Relatorio');
+                        },
+                      ),
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: SizedBox(
+                        height: 25,
+                        child: ElevatedButton(
+                          child: const Text("Cadastro de usuarios"),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/Cadastro');
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(15),
                     child: SizedBox(
                       height: 25,
                       child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text("Cadastro de usuarios")),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: SizedBox(
-                      height: 25,
-                      child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text("Usuarios cadastrados")),
+                          child: const Text("Usuarios cadastrados"),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/ListaUsuario');
+                          }),
                     ),
                   )
                 ],

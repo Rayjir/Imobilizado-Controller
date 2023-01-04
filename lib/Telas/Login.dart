@@ -24,7 +24,7 @@ class _LoginState extends State<Login> {
           ),
           body: Container(
             child: Row(children: [
-              Expanded(child: Image.asset('assets/TelaLoginImg.png')),
+              Expanded(child: Image.asset('assets/TelaLoginImg.png', fit: BoxFit.cover,)),
               Expanded(
                   child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -58,10 +58,7 @@ class _LoginState extends State<Login> {
                       child: ElevatedButton(
                           child: Text("Entrar"),
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Home()));
+                            Navigator.pushNamed(context, '/Home');
                           }))
                 ],
               ))
