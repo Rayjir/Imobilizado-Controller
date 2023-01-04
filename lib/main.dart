@@ -11,7 +11,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options:  DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyWebApp());
+  runApp(const MyWebApp());
 }
 
 class MyWebApp extends StatelessWidget {

@@ -16,54 +16,67 @@ TextEditingController Senha = TextEditingController();
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
+double largura = MediaQuery.of(context).size.width;
     return MaterialApp(
-      home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color(0xff931111),
-            title: const Text("Imobilizado"),
-          ),
-          body: Container(
-            child: Row(children: [
-              Expanded(child: Image.asset('assets/TelaLoginImg.png', fit: BoxFit.cover,)),
-              Expanded(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(0, 20, 0, 25),
-                    child: Text("Gestão de imobilizado"),
+        home: Scaffold(
+            body: Container(
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/TelaLoginImg.png'),
+                      fit: BoxFit.fill),
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  width: largura > 960? 500: MediaQuery.of(context).size.width*0.9,
+                  decoration:  BoxDecoration(
+                    color: const Color(0xfffcfcfc),
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [ BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.3),
+                      blurRadius: 1,
+                      offset:Offset(0,3),
+                      blurStyle: BlurStyle.inner,
+                      spreadRadius: 2.0
+                   )],
                   ),
-                  Padding(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 20, 0, 25),
+                      child: Text("Gestão de imobilizado"),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.all(25),
+                        child: TextFormField(
+                          controller: Email,
+                          decoration: const InputDecoration(
+                              hintText: "Digite seu E-mail",
+                              labelText: "Email",
+                              prefixIcon: Icon(Icons.person)),
+                        )),
+                    Padding(
                       padding: const EdgeInsets.all(25),
                       child: TextFormField(
-                        controller: Email,
+                        controller: Senha,
                         decoration: const InputDecoration(
-                          hintText: "Digite seu E-mail",
-                          labelText: "Email",
+                          hintText: "Digite a sua senha",
+                          labelText: "Senha",
+                          prefixIcon: Icon(Icons.lock),
+                        
                         ),
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: TextFormField(
-                      controller: Senha,
-                      decoration: const InputDecoration(
-                        hintText: "Digite a sua senha",
-                        labelText: "Senha",
                       ),
                     ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
-                      child: ElevatedButton(
-                          child: Text("Entrar"),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/Home');
-                          }))
-                ],
-              ))
-            ]),
-          )),
-    );
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(50, 25, 50, 25),
+                        child: ElevatedButton(
+                            child: const Text("Entrar"),
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/Home');
+                            }))
+                  ],
+                )))));
   }
 }
