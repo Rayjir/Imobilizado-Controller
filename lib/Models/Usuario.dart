@@ -7,12 +7,6 @@ class Usuario {
   String? _email;
   String? _urlImagem;
   String? _senha;
-
-  
-  // Usuario(String _email, String _senha) {
-  //   this._email = _email;
-  //   this._senha = _senha;
-  // }
   
   Usuario();
 
@@ -36,8 +30,8 @@ class Usuario {
 
   String get getEmail => _email!;
 
-  set setEmail(String value) {
-    _email = value;
+  set setEmail(String setEmail) {
+    _email = setEmail;
   }
 
   String get nome => _nome!;

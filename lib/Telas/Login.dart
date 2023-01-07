@@ -14,12 +14,15 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
-Usuario usuario = Usuario();
-
 TextEditingController EmailController = TextEditingController();
 TextEditingController SenhaController = TextEditingController();
+Usuario usuario = Usuario();
 
-_logarUsuario(context, Usuario usuario) async {
+bool passwordVisible = false;
+
+final _FormKey = GlobalKey<FormState>();
+
+_logarUsuario(BuildContext context, Usuario usuario) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -27,7 +30,8 @@ _logarUsuario(context, Usuario usuario) async {
       .signInWithEmailAndPassword(
           email: usuario.getEmail, password: usuario.getSenha)
       .then((firebaseUser) {
-    Navigator.popAndPushNamed(context, "/");
+    print("Conectou");
+    Navigator.popAndPushNamed(context, "/Home");
   }).catchError((error) {
     showModalBottomSheet<void>(
       context: context,
@@ -63,8 +67,6 @@ _logarUsuario(context, Usuario usuario) async {
     );
   });
 }
-
-final _FormKey = GlobalKey<FormState>();
 
 class _LoginState extends State<Login> {
   @override
@@ -102,9 +104,16 @@ class _LoginState extends State<Login> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(0, 15, 0, 20),
+                              child: Container(
+                                height: 70,
+                                child: Image.asset('assets/logo.png'),
+                              )
+                            ),
                             const Padding(
-                              padding: EdgeInsets.fromLTRB(0, 20, 0, 25),
-                              child: Text("Gestão de imobilizado"),
+                              padding: EdgeInsets.fromLTRB(0, 15, 0, 25),
+                              child: Text("Gestão de imobilizado",),
                             ),
                             Padding(
                                 padding: const EdgeInsets.all(25),
@@ -125,6 +134,7 @@ class _LoginState extends State<Login> {
                               padding: const EdgeInsets.all(25),
                               child: TextFormField(
                                 controller: SenhaController,
+                                obscureText: !passwordVisible,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Digite sua senha';
@@ -134,10 +144,19 @@ class _LoginState extends State<Login> {
                                   }
                                   return null;
                                 },
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   hintText: "Digite a sua senha",
                                   labelText: "Senha",
                                   prefixIcon: Icon(Icons.lock),
+                                  suffixIcon: IconButton(
+                                      icon: Icon(passwordVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off),
+                                      onPressed: () {
+                                        setState(() {
+                                          passwordVisible = !passwordVisible;
+                                        });
+                                      }),
                                 ),
                               ),
                             ),
@@ -148,11 +167,13 @@ class _LoginState extends State<Login> {
                                     child: const Text("Entrar"),
                                     onPressed: () {
                                       if (_FormKey.currentState!.validate()) {
-                                        setState(
-                                          usuario.setEmail(EmailController);
-                                        )
-
-                                        _logarUsuario(context, usuario);
+                                        setState(() {
+                                          usuario.setEmail =
+                                              EmailController.text;
+                                          usuario.setSenha =
+                                              SenhaController.text;
+                                          _logarUsuario(context, usuario);
+                                        });
                                       }
                                     }))
                           ],
