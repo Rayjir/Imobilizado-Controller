@@ -20,7 +20,7 @@ class MyWebApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/Cadastro',
       routes: {
         '/':(context) => Login(),
         '/Home':(context) => Home(),

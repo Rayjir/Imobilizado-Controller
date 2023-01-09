@@ -39,17 +39,22 @@ Future<void> criarUsuario(BuildContext context, Usuario usuario) async {
 }
 
 Future<void> getUserid(Usuario usuario) async {
-  //Perguntar ao paulo sobre (nao entendi)
   Firebase.initializeApp();
-  FirebaseAuth auth = FirebaseAuth.instance;
-  // final userCredential = await auth.signInWithCredential();
+//  FirebaseAuth.instance
+//       .signInWithEmailAndPassword(
+//           email: 'test@example.com', password: 'password123')
+//       .then((user) {
+//     String uid = user.uid;
+//     // Do something with the uid
+//   });
+
   salvarUsuario(usuario);
 }
 
 void salvarUsuario(Usuario usuario) {
   FirebaseDatabase database = FirebaseDatabase.instance;
-  
 }
+
 final FormKey = GlobalKey<FormState>();
 
 Usuario usuario = Usuario();
