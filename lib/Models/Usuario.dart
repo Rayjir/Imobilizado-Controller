@@ -5,27 +5,22 @@ class Usuario {
   String? _idUsuario;
   String? _nome;
   String? _email;
-  String? _urlImagem;
   String? _senha;
-  
+  String? _filial;
+  // String? _
+
   Usuario();
 
   String get idUsuario => _idUsuario!;
 
-  set idUsuario(String value) {
-    _idUsuario = value;
+  set setIdUsuario(String IdUsuario) {
+    _idUsuario = IdUsuario;
   }
 
   String get getSenha => _senha!;
 
-  set setSenha(String value) {
-    _senha = value;
-  }
-
-  String get urlImagem => _urlImagem!;
-
-  set urlImagem(String value) {
-    _urlImagem = value;
+  set setSenha(String Senha) {
+    _senha = Senha;
   }
 
   String get getEmail => _email!;
@@ -34,9 +29,15 @@ class Usuario {
     _email = setEmail;
   }
 
-  String get nome => _nome!;
+  String get setNome => _nome!;
 
-  set nome(String value) {
-    _nome = value;
+  set setNome(String nome) {
+    _nome = nome;
+  }
+
+  String get setfilial => _filial!;
+
+  set setfilial (String filial) {
+    _nome = filial;
   }
 }
