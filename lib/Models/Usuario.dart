@@ -11,7 +11,7 @@ class Usuario {
 
   Usuario();
 
-  String get idUsuario => _idUsuario!;
+  String get getIdUsuario => _idUsuario!;
 
   set setIdUsuario(String IdUsuario) {
     _idUsuario = IdUsuario;
@@ -29,13 +29,13 @@ class Usuario {
     _email = setEmail;
   }
 
-  String get setNome => _nome!;
+  String get getNome => _nome!;
 
   set setNome(String nome) {
     _nome = nome;
   }
 
-  String get setfilial => _filial!;
+  String get getfilial => _filial!;
 
   set setfilial (String filial) {
     _nome = filial;

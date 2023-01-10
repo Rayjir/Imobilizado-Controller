@@ -12,6 +12,17 @@ class CadastroUsuario extends StatefulWidget {
   State<CadastroUsuario> createState() => _CadastroUsuarioState();
 }
 
+final FormKey = GlobalKey<FormState>();
+
+Usuario usuario = Usuario();
+
+DatabaseReference ref = FirebaseDatabase.instance.ref("Tab_Usuarios");
+
+TextEditingController NomeController = TextEditingController();
+TextEditingController EmailController = TextEditingController();
+TextEditingController SenhaController = TextEditingController();
+TextEditingController FilialController = TextEditingController();
+
 Future<void> criarUsuario(BuildContext context, Usuario usuario) async {
   WidgetsFlutterBinding();
   await Firebase.initializeApp();
@@ -40,28 +51,24 @@ Future<void> criarUsuario(BuildContext context, Usuario usuario) async {
 
 Future<void> getUserid(Usuario usuario) async {
   Firebase.initializeApp();
-//  FirebaseAuth.instance
-//       .signInWithEmailAndPassword(
-//           email: 'test@example.com', password: 'password123')
-//       .then((user) {
-//     String uid = user.uid;
-//     // Do something with the uid
-//   });
-
+  FirebaseAuth.instance
+      .signInWithEmailAndPassword(
+          email: usuario.getEmail, password: usuario.getSenha)
+      .then((user) {
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
+    usuario.setIdUsuario = uid!;
+  });
   salvarUsuario(usuario);
 }
 
 void salvarUsuario(Usuario usuario) {
-  FirebaseDatabase database = FirebaseDatabase.instance;
+  ref.set({
+    "nome": usuario.getNome,
+    "uid": usuario.getIdUsuario,
+    "email": usuario.getEmail,
+    "filial": usuario.getfilial
+  });
 }
-
-final FormKey = GlobalKey<FormState>();
-
-Usuario usuario = Usuario();
-
-TextEditingController NomeController = TextEditingController();
-TextEditingController EmailController = TextEditingController();
-TextEditingController SenhaController = TextEditingController();
 
 class _CadastroUsuarioState extends State<CadastroUsuario> {
   @override
@@ -107,6 +114,14 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
                                 labelText: "Senha",
                                 prefixIcon: Icon(Icons.lock)))),
                     Padding(
+                        padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
+                        child: TextFormField(
+                            controller: FilialController,
+                            decoration: const InputDecoration(
+                                hintText: "Digite a filial do usuario",
+                                labelText: "Filial",
+                                prefixIcon: Icon(Icons.local_activity)))),
+                    Padding(
                       padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
                       child: ElevatedButton(
                         child: Text("Criar Usuario"),
@@ -115,6 +130,7 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
                             usuario.setNome = NomeController.text;
                             usuario.setEmail = EmailController.text;
                             usuario.setSenha = SenhaController.text;
+                            usuario.setfilial = FilialController.text;
                             criarUsuario(context, usuario);
                           });
                         },
