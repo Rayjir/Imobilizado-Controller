@@ -71,6 +71,7 @@ _logarUsuario(BuildContext context, Usuario usuario) async {
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
+    double altura = MediaQuery.of(context).size.height;
     double largura = MediaQuery.of(context).size.width;
     return MaterialApp(
         home: Scaffold(
@@ -82,7 +83,9 @@ class _LoginState extends State<Login> {
                       fit: BoxFit.fill),
                 ),
                 child: Container(
-                    height: MediaQuery.of(context).size.height * 0.5,
+                    height: altura > 700
+                        ? 500
+                        : MediaQuery.of(context).size.width * 0.6,
                     width: largura > 960
                         ? 500
                         : MediaQuery.of(context).size.width * 0.9,
@@ -105,15 +108,17 @@ class _LoginState extends State<Login> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
-                              padding: EdgeInsets.fromLTRB(0, 15, 0, 20),
-                              child: Container(
-                                height: 70,
-                                child: Image.asset('assets/logo.png'),
-                              )
-                            ),
+                                padding: EdgeInsets.fromLTRB(0, 15, 0, 20),
+                                child: Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.1,
+                                  child: Image.asset('assets/logo.png'),
+                                )),
                             const Padding(
                               padding: EdgeInsets.fromLTRB(0, 15, 0, 25),
-                              child: Text("Gestão de imobilizado",),
+                              child: Text(
+                                "Gestão de imobilizado",
+                              ),
                             ),
                             Padding(
                                 padding: const EdgeInsets.all(25),

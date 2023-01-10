@@ -31,7 +31,9 @@ Future<void> criarUsuario(BuildContext context, Usuario usuario) async {
       .createUserWithEmailAndPassword(
           email: usuario.getEmail, password: usuario.getSenha)
       .then((firebeseuser) {
-    getUserid(usuario);
+    print("Criado com sucesso");
+    usuario.setIdUsuario = firebeseuser.user!.uid;
+    // salvarUsuario(usuario);
   }).catchError((error) {
     showDialog(
       context: context,
@@ -49,30 +51,21 @@ Future<void> criarUsuario(BuildContext context, Usuario usuario) async {
   });
 }
 
-Future<void> getUserid(Usuario usuario) async {
-  Firebase.initializeApp();
-  FirebaseAuth.instance
-      .signInWithEmailAndPassword(
-          email: usuario.getEmail, password: usuario.getSenha)
-      .then((user) {
-    String? uid = FirebaseAuth.instance.currentUser?.uid;
-    usuario.setIdUsuario = uid!;
-  });
-  salvarUsuario(usuario);
-}
-
-void salvarUsuario(Usuario usuario) {
-  ref.set({
-    "nome": usuario.getNome,
-    "uid": usuario.getIdUsuario,
-    "email": usuario.getEmail,
-    "filial": usuario.getfilial
-  });
-}
+// void salvarUsuario(Usuario usuario) {
+//   ref.set({
+//     "nome": usuario.getNome,
+//     "uid": usuario.getIdUsuario,
+//     "email": usuario.getEmail,
+//     "filial": usuario.getfilial
+//   });
+// }
 
 class _CadastroUsuarioState extends State<CadastroUsuario> {
   @override
   Widget build(BuildContext context) {
+    double altura = MediaQuery.of(context).size.height;
+    double largura = MediaQuery.of(context).size.width;
+
     return MaterialApp(
         home: Scaffold(
       body: Form(
@@ -81,63 +74,70 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
             alignment: Alignment.center,
             color: Colors.amber,
             child: Container(
-              alignment: Alignment.center,
-              height: MediaQuery.of(context).size.height * 0.8,
-              width: MediaQuery.of(context).size.width * 0.3,
-              color: Colors.white,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 15, 10, 15),
-                        child: TextFormField(
-                          controller: NomeController,
-                          decoration: const InputDecoration(
-                              hintText: "Digite o nome do usuario",
-                              labelText: "Nome do funcionario",
-                              prefixIcon: Icon(Icons.person)),
-                        )),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
-                        child: TextFormField(
-                            controller: EmailController,
-                            decoration: const InputDecoration(
-                                hintText: "Dinite o email de acesso",
-                                labelText: "Email",
-                                prefixIcon: Icon(Icons.email)))),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
-                        child: TextFormField(
-                            controller: SenhaController,
-                            decoration: const InputDecoration(
-                                hintText: "Digite a senha do usuario",
-                                labelText: "Senha",
-                                prefixIcon: Icon(Icons.lock)))),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
-                        child: TextFormField(
-                            controller: FilialController,
-                            decoration: const InputDecoration(
-                                hintText: "Digite a filial do usuario",
-                                labelText: "Filial",
-                                prefixIcon: Icon(Icons.local_activity)))),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 15, 10, 15),
-                      child: ElevatedButton(
-                        child: Text("Criar Usuario"),
-                        onPressed: () {
-                          setState(() {
-                            usuario.setNome = NomeController.text;
-                            usuario.setEmail = EmailController.text;
-                            usuario.setSenha = SenhaController.text;
-                            usuario.setfilial = FilialController.text;
-                            criarUsuario(context, usuario);
-                          });
-                        },
-                      ),
-                    )
-                  ]),
-            )),
+                alignment: Alignment.center,
+                height: altura > 700
+                    ? 500
+                    : MediaQuery.of(context).size.width * 0.5,
+                width: largura > 960
+                    ? 500
+                    : MediaQuery.of(context).size.width * 0.5,
+                decoration: BoxDecoration(
+                  color: const Color(0xfffcfcfc),
+                  borderRadius: BorderRadius.circular(25),
+                  boxShadow: const [
+                    BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.3),
+                        blurRadius: 1,
+                        offset: Offset(0, 3),
+                        blurStyle: BlurStyle.inner,
+                        spreadRadius: 2.0)
+                  ],
+                ),
+                child: ListView(
+                  
+                  padding:  const EdgeInsets.fromLTRB(50, 100, 50, 100),
+
+                  children: [
+                    TextFormField(
+                      controller: NomeController,
+                      decoration: const InputDecoration(
+                          hintText: "Digite o nome do usuario",
+                          labelText: "Nome do funcionario",
+                          prefixIcon: Icon(Icons.person)),
+                    ),
+                    
+                    TextFormField(
+                        controller: EmailController,
+                        decoration: const InputDecoration(
+                            hintText: "Dinite o email de acesso",
+                            labelText: "Email",
+                            prefixIcon: Icon(Icons.email))),
+                    TextFormField(
+                        controller: SenhaController,
+                        decoration: const InputDecoration(
+                            hintText: "Digite a senha do usuario",
+                            labelText: "Senha",
+                            prefixIcon: Icon(Icons.lock))),
+                    TextFormField(
+                        controller: FilialController,
+                        decoration: const InputDecoration(
+                            hintText: "Digite a filial do usuario",
+                            labelText: "Filial",
+                            prefixIcon: Icon(Icons.local_activity))),
+                    ElevatedButton(
+                      child: Text("Criar Usuario"),
+                      onPressed: () {
+                        setState(() {
+                          usuario.setNome = NomeController.text;
+                          usuario.setEmail = EmailController.text;
+                          usuario.setSenha = SenhaController.text;
+                          usuario.setfilial = FilialController.text;
+                        });
+                        criarUsuario(context, usuario);
+                      },
+                    ),
+                  ],
+                ))),
       ),
     ));
   }
