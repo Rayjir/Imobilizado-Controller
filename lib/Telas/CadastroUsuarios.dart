@@ -1,9 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:imobilizado_desktop/Models/usuario.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:imobilizado_desktop/Models/Usuario.dart';
 
 class CadastroUsuario extends StatefulWidget {
   const CadastroUsuario({super.key});
@@ -12,55 +11,22 @@ class CadastroUsuario extends StatefulWidget {
   State<CadastroUsuario> createState() => _CadastroUsuarioState();
 }
 
-final FormKey = GlobalKey<FormState>();
-
-Usuario usuario = Usuario();
-
-DatabaseReference ref = FirebaseDatabase.instance.ref("Tab_Usuarios");
-
-TextEditingController NomeController = TextEditingController();
-TextEditingController EmailController = TextEditingController();
-TextEditingController SenhaController = TextEditingController();
-TextEditingController FilialController = TextEditingController();
-
-Future<void> criarUsuario(BuildContext context, Usuario usuario) async {
-  WidgetsFlutterBinding();
-  await Firebase.initializeApp();
-  FirebaseAuth auth = FirebaseAuth.instance;
-  auth
-      .createUserWithEmailAndPassword(
-          email: usuario.getEmail, password: usuario.getSenha)
-      .then((firebeseuser) {
-    print("Criado com sucesso");
-    usuario.setIdUsuario = firebeseuser.user!.uid;
-    // salvarUsuario(usuario);
-  }).catchError((error) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Falha ao criar o usuario"),
-          actions: [
-            ElevatedButton(
-                onPressed: (() => Navigator.pop(context)),
-                child: const Text("Voltar"))
-          ],
-        );
-      },
-    );
-  });
-}
-
-// void salvarUsuario(Usuario usuario) {
-//   ref.set({
-//     "nome": usuario.getNome,
-//     "uid": usuario.getIdUsuario,
-//     "email": usuario.getEmail,
-//     "filial": usuario.getfilial
-//   });
-// }
-
 class _CadastroUsuarioState extends State<CadastroUsuario> {
+  final FormKey = GlobalKey<FormState>();
+
+  Usuario usuario = Usuario();
+
+  CollectionReference dbItens =
+      FirebaseFirestore.instance.collection('TABPESSOAS');
+  FirebaseFirestore db = FirebaseFirestore.instance;
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  TextEditingController NomeController = TextEditingController();
+  TextEditingController EmailController = TextEditingController();
+  TextEditingController SenhaController = TextEditingController();
+  TextEditingController FilialController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     double altura = MediaQuery.of(context).size.height;
@@ -94,9 +60,7 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
                   ],
                 ),
                 child: ListView(
-                  
-                  padding:  const EdgeInsets.fromLTRB(50, 100, 50, 100),
-
+                  padding: const EdgeInsets.fromLTRB(50, 100, 50, 100),
                   children: [
                     TextFormField(
                       controller: NomeController,
@@ -105,7 +69,6 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
                           labelText: "Nome do funcionario",
                           prefixIcon: Icon(Icons.person)),
                     ),
-                    
                     TextFormField(
                         controller: EmailController,
                         decoration: const InputDecoration(
@@ -127,18 +90,48 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
                     ElevatedButton(
                       child: Text("Criar Usuario"),
                       onPressed: () {
-                        setState(() {
-                          usuario.setNome = NomeController.text;
-                          usuario.setEmail = EmailController.text;
-                          usuario.setSenha = SenhaController.text;
-                          usuario.setfilial = FilialController.text;
-                        });
-                        criarUsuario(context, usuario);
+                        // setState(() {
+                        //   usuario.setNome = NomeController.text;
+                        //   usuario.setEmail = EmailController.text;
+                        //   usuario.setSenha = SenhaController.text;
+                        //   usuario.setfilial = FilialController.text;
+                        // });
+                        cadastrar(usuario);
                       },
                     ),
                   ],
                 ))),
       ),
     ));
+  }
+
+  cadastrar(Usuario usuario) async {
+    try {
+      UserCredential userCredencial = await auth.createUserWithEmailAndPassword(
+          email: EmailController.text, password: SenhaController.text);
+      if (userCredencial != null) {
+        userCredencial.user!.updateDisplayName(NomeController.text);
+
+        db.collection('TABPESSOAS').doc().set({
+          "Nome": NomeController.text.toString(),
+          "Email": EmailController.text.toString(),
+          "Filial": FilialController.text.toString(),
+          "uid": userCredencial.user!.uid
+        });
+        Navigator.popAndPushNamed(context, "/Home");
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Crie uma senha mais forte'),
+          backgroundColor: Colors.redAccent,
+        ));
+      } else if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Esse e-mail ja foi cadastrado'),
+          backgroundColor: Colors.redAccent,
+        ));
+      }
+    }
   }
 }

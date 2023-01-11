@@ -1,6 +1,3 @@
-import 'dart:ui';
-import 'package:flutter/src/widgets/editable_text.dart';
-
 class Usuario {
   String? _idUsuario;
   String? _nome;
