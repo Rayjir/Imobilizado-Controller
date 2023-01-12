@@ -9,7 +9,7 @@ import 'package:imobilizado_desktop/Telas/Login.dart';
 
 Future<void> main() async {
   await Firebase.initializeApp(
-    options:  DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyWebApp());
 }
@@ -22,14 +22,12 @@ class MyWebApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/':(context) => Login(),
-        '/Home':(context) => Home(),
-        '/Cadastro':(context) => CadastroUsuario(),
-        '/ListaUsuario':(context) => ListaUsuarios(),
-        '/Relatorio': (context) => Relatorio() 
+        '/': (context) => Login(),
+        '/Home': (context) => Home(),
+        '/Cadastro': (context) => CadastroUsuario(),
+        '/ListaUsuario': (context) => ListaUsuarios(),
+        '/Relatorio': (context) => Relatorio()
       },
     );
   }
 }
-
-
