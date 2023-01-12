@@ -17,7 +17,7 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
   final FormKey = GlobalKey<FormState>();
 
   Usuario usuario = Usuario();
-
+  FirebaseFirestore db = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
 
   TextEditingController NomeController = TextEditingController();
@@ -25,32 +25,15 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
   TextEditingController SenhaController = TextEditingController();
   TextEditingController FilialController = TextEditingController();
 
-  final streamController = StreamController<QuerySnapshot>.broadcast();
-  CollectionReference dbItens =
-      FirebaseFirestore.instance.collection('TABPESSOAS');
-  FirebaseFirestore db = FirebaseFirestore.instance;
-
-  Future<Stream<QuerySnapshot>?> _addItensListener() async {
-    FirebaseFirestore db = FirebaseFirestore.instance;
-    Stream<QuerySnapshot> stream =
-        db.collection("TABPESSOAS").snapshots();
-
-    stream.listen((data) {
-      streamController.add(data);
-    });
+  Future getUsuarios() async {
+    var firestore = FirebaseFirestore.instance;
+    QuerySnapshot qn = await firestore.collection("TABPESSOAS").get();
+    return qn.docs;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _addItensListener();
-  }
-  
   @override
   Widget build(BuildContext context) {
     double altura = MediaQuery.of(context).size.height;
-    double largura = MediaQuery.of(context).size.width;
-
     return MaterialApp(
         home: Scaffold(
       body: Container(
@@ -58,7 +41,25 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
           color: Colors.amber,
           child: Row(
             children: [
-              Expanded(child: ListView()),
+              Expanded(
+                  child: FutureBuilder(
+                future: getUsuarios(),
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: Text("Loading ..."),
+                    );
+                  } else {
+                    ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: ((_, index) {
+                          return ListTile(
+                            title: Text(snapshot.data[index]),
+                          );
+                        }));
+                  }
+                },
+              )),
               Expanded(
                 child: Form(
                     key: FormKey,
@@ -66,10 +67,8 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
                         alignment: Alignment.center,
                         height: altura > 700
                             ? 500
-                            : MediaQuery.of(context).size.width * 0.5,
-                        width: largura > 960
-                            ? 500
-                            : MediaQuery.of(context).size.width * 0.5,
+                            : MediaQuery.of(context).size.height * 0.5,
+                        width: MediaQuery.of(context).size.width * 0.1,
                         decoration: BoxDecoration(
                           color: const Color(0xfffcfcfc),
                           borderRadius: BorderRadius.circular(25),
@@ -111,7 +110,7 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
                                     labelText: "Filial",
                                     prefixIcon: Icon(Icons.local_activity))),
                             ElevatedButton(
-                              child: Text("Criar Usuario"),
+                              child: const Text("Criar Usuario"),
                               onPressed: () {
                                 cadastrar(usuario);
                               },
@@ -138,6 +137,10 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
           "uid": userCredencial.user!.uid
         });
         formClear();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Usuario Criado'),
+          backgroundColor: Colors.green,
+        ));
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

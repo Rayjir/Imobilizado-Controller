@@ -85,7 +85,7 @@ class _LoginState extends State<Login> {
                 child: Container(
                     height: altura > 700
                         ? 500
-                        : MediaQuery.of(context).size.width * 0.6,
+                        : MediaQuery.of(context).size.width * 0.7,
                     width: largura > 960
                         ? 500
                         : MediaQuery.of(context).size.width * 0.9,
@@ -108,20 +108,20 @@ class _LoginState extends State<Login> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
-                                padding: EdgeInsets.fromLTRB(0, 15, 0, 20),
+                                padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                                 child: Container(
                                   height:
                                       MediaQuery.of(context).size.height * 0.1,
                                   child: Image.asset('assets/logo.png'),
                                 )),
                             const Padding(
-                              padding: EdgeInsets.fromLTRB(0, 15, 0, 25),
+                              padding: EdgeInsets.fromLTRB(0, 15, 0, 20),
                               child: Text(
                                 "Gestão de imobilizado",
                               ),
                             ),
                             Padding(
-                                padding: const EdgeInsets.all(25),
+                                padding: const EdgeInsets.all(20),
                                 child: TextFormField(
                                   controller: EmailController,
                                   validator: (value) {
@@ -134,9 +134,18 @@ class _LoginState extends State<Login> {
                                       hintText: "Digite seu E-mail",
                                       labelText: "Email",
                                       prefixIcon: Icon(Icons.person)),
+                                      onFieldSubmitted: (value) {
+                                    if (_FormKey.currentState!.validate()) {
+                                      setState(() {
+                                        usuario.setEmail = EmailController.text;
+                                        usuario.setSenha = SenhaController.text;
+                                        _logarUsuario(context, usuario);
+                                      });
+                                    }
+                                  },
                                 )),
                             Padding(
-                              padding: const EdgeInsets.all(25),
+                              padding: const EdgeInsets.all(20),
                               child: TextFormField(
                                 controller: SenhaController,
                                 obscureText: !passwordVisible,
@@ -163,6 +172,15 @@ class _LoginState extends State<Login> {
                                         });
                                       }),
                                 ),
+                                onFieldSubmitted: (value) {
+                                  if (_FormKey.currentState!.validate()) {
+                                    setState(() {
+                                      usuario.setEmail = EmailController.text;
+                                      usuario.setSenha = SenhaController.text;
+                                      _logarUsuario(context, usuario);
+                                    });
+                                  }
+                                },
                               ),
                             ),
                             Padding(
@@ -170,6 +188,7 @@ class _LoginState extends State<Login> {
                                     const EdgeInsets.fromLTRB(50, 25, 50, 25),
                                 child: ElevatedButton(
                                     child: const Text("Entrar"),
+                                    
                                     onPressed: () {
                                       if (_FormKey.currentState!.validate()) {
                                         setState(() {
